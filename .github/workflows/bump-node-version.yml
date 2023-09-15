@@ -1,4 +1,4 @@
-name: Bump Node Version
+name: Node Version Bump
 
 on:
   push:
@@ -6,15 +6,14 @@ on:
       - master
 
 jobs:
-  bump-version:
+  bump-node-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 16
+      - uses: actions/checkout@v1
       - uses: phips28/gh-action-bump-version@master
-
         with:
-          bump-policy: 'ignore'
-          package-file: package.json
+          bump-policy: 'last-commit'
+          PACKAGEJSON_DIR: .
