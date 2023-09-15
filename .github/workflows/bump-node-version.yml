@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
-      - uses: phips28/gh-action-bump-version@v3
+      - uses: phips28/gh-action-bump-version@latest
 
         with:
           bump-policy: 'ignore'
