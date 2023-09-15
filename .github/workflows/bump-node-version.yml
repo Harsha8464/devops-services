@@ -17,3 +17,5 @@ jobs:
         with:
           bump-policy: 'last-commit'
           PACKAGEJSON_DIR: .
+          secrets:
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
