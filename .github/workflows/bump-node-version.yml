@@ -17,19 +17,32 @@ jobs:
       id: on-master
       run: echo ::set-output name=IS_MASTER::$(echo "${{ github.ref }}" | grep -c "refs/heads/master$")
 
-    - name: Install Node.js
+    - name: Install Node.js using nvm
       if: steps.on-master.outputs.IS_MASTER == '1'
       uses: actions/setup-node@v2
       with:
         node-version: '14' # Choose the desired Node.js version
 
+    - name: Use Node.js version with nvm
+      if: steps.on-master.outputs.IS_MASTER == '1'
+      run: |
+        # Install nvm if not already installed
+        if [ ! -d ~/.nvm ]; then
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+        fi
+        
+        # Load nvm
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+        # Install and use the specified Node.js version
+        nvm install 14
+        nvm use 14
+
     - name: Bump Node.js Version
       if: steps.on-master.outputs.IS_MASTER == '1'
       run: |
-        # You can use nvm or n to manage Node.js versions here
-        # Example using n:
-        npm install -g n
-        n latest
+        # Run any additional Node.js version management commands you need here
 
     - name: Run tests or build
       if: steps.on-master.outputs.IS_MASTER == '1'
@@ -39,4 +52,3 @@ jobs:
         npm run build
 
     # Add more steps for deployment or other actions if needed
-
