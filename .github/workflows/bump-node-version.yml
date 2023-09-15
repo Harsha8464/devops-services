@@ -1,4 +1,4 @@
-name: Node Version Bump
+name: Auto Bump Node.js Version
 
 on:
   push:
@@ -8,14 +8,35 @@ on:
 jobs:
   bump-node-version:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - uses: actions/checkout@v1
-      - uses: phips28/gh-action-bump-version@master
-        with:
-          bump-policy: 'last-commit'
-          PACKAGEJSON_DIR: .
-          secrets:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check if on master branch
+      id: on-master
+      run: echo ::set-output name=IS_MASTER::$(echo "${{ github.ref }}" | grep -c "refs/heads/master$")
+
+    - name: Install Node.js
+      if: steps.on-master.outputs.IS_MASTER == '1'
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14' # Choose the desired Node.js version
+
+    - name: Bump Node.js Version
+      if: steps.on-master.outputs.IS_MASTER == '1'
+      run: |
+        # You can use nvm or n to manage Node.js versions here
+        # Example using n:
+        npm install -g n
+        n latest
+
+    - name: Run tests or build
+      if: steps.on-master.outputs.IS_MASTER == '1'
+      run: |
+        # Replace this with your build or test commands
+        npm install
+        npm run build
+
+    # Add more steps for deployment or other actions if needed
+
